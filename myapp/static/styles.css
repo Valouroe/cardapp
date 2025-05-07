@@ -1,0 +1,54 @@
+body{
+    background-color: crimson;
+}
+.card-page{
+    color:darkblue;
+}
+.object{
+    background-color: white;
+    width:300px;
+    height:445px;
+    border:10px solid blue; 
+    margin:60px auto 0 auto;
+    color:darkslateblue;
+    padding:0;
+    line-height: 15px;
+    font-size: large;
+    font-weight: bold;
+}
+.object1{
+    background-color: white;
+    width:300px;
+    height:445px;
+    border:10px solid blue; 
+    margin:60px auto 0 auto;
+    color:darkslateblue;
+    padding:0;
+    line-height: 15px;
+    font-size: large;
+    font-weight: bold;
+}
+.object2{
+    background-color: white;
+    width:300px;
+    height:445px;
+    border:10px solid blue; 
+    margin:60px auto 0 auto;
+    color:darkslateblue;
+    padding:0;
+    line-height: 15px;
+    font-size: large;
+    font-weight: bold;
+}
+.object3{
+    background-color: white;
+    width:300px;
+    height:445px;
+    border:10px solid blue; 
+    margin:60px auto 0 auto;
+    color:darkslateblue;
+    padding:0;
+    line-height: 15px;
+    font-size: large;
+    font-weight: bold;
+}

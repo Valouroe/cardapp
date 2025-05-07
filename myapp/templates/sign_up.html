@@ -1,0 +1,139 @@
+<!-- <h1>Sign Up (Create a New Card)</h1>
+<form method="POST">
+    {% csrf_token %}
+    Card Name: <input type="text" name="card_name" required><br>
+    Your Email: <input type="email" name="email" required><br>
+    <button type="submit">Create Card</button>
+</form>
+<style>
+    .error {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li class="error">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<a href="{% url 'select_card' %}">Back</a> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #83a4d4, #b6fbff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 24px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            border-color: #007BFF;
+        }
+
+        button[type="submit"] {
+            padding: 12px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0056b3;
+        }
+
+        ul {
+            padding-left: 0;
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sign Up (Create a New Card)</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="card_name" placeholder="Card Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <button type="submit">Create Card</button>
+    </form>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li class="error">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a class="back-link" href="{% url 'select_card' %}">← Back to Home</a>
+</div>
+
+</body>
+</html>

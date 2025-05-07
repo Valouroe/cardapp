@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Multi-page Card{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}" type="text/css">
+    <!-- <script>"https://smtpjs.com/v3/smtp.js"</script> -->
+    
+</head>
+
+<script>
+    
+    function receive(){
+        
+        // <iframe id="my" src="join.html"></iframe>
+        console.log("Y")
+        var csrftoken = '{{ csrf_token }}';
+        // xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        var req = new XMLHttpRequest();
+        req.onreadystatechange=function(){
+            if(this.readyState==4 && this.status==200){
+                var responseMessage=document.getElementById("responseMessage");
+                responseMessage.innerText = "Message submitted successfully! Logout or close the tab.";
+                responseMessage.style.color = "beige";
+                console.log(this.responseText);
+            }
+            else if(this.staus!=200){
+                console.log("Error:", this.responseText);
+                responseMessage.innerText = "An error occurred. Please try again.";
+                responseMessage.style.color = "red";
+            }
+        }
+        var mess=document.getElementById("message").value;
+        var na=document.getElementById("name").value;
+        req.open("POST", '/update_message/');
+        req.setRequestHeader("X-CSRFToken", csrftoken);
+        const form=new FormData();
+        form.append('name',na)
+        form.append('message',mess)
+        req.send(form);
+        // req.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+        
+        
+
+        
+    };
+</script>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    /* Button Base Style */
+    button, input[type="button"] {
+        background-color: blue;
+        color: white;
+        padding: 12px 20px;
+        margin: 10px 5px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover, input[type="button"]:hover {
+        background-color: blueviolet;
+        transform: scale(1.05);
+    }
+
+    /* Specific Styling for Logout Button */
+    .logout-btn {
+        background-color: blue;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+
+    .logout-btn:hover {
+        background-color: blueviolet;
+    }
+</style>
+
+<body>
+    
+    <!-- action="{% url 'home' %}" -->
+    <!-- <form method="GET"  id="myform"> -->
+        <!-- {% csrf_token %} -->
+    <div class="card-container">
+        <div class="card-page" id="page1">
+            <label for="name">What name do you want on the card?</label>
+            <input type="text" id="name" name="name">
+            <br><br>
+            <label for="message">What is your message?</label>
+            <input type="text" id="message" name="message">
+            <br><br>
+            <input type="button" id="but" value="Check">
+            <button type="button" onclick="receive()" id="u">Submit</button>
+            <p id="responseMessage" style="color: beige;"></p>
+            <!-- <button onclick="p()" style="color:white";>Print</button> -->
+            <!-- <button type="button" onclick="send()" id="x">Email</button> -->
+            <button type="button" onclick="activate3DCard()" id="flipTrigger">Flip to Card View</button> 
+            <button onclick="prevPage()">Previous</button>
+            <button onclick="nextPage()">Next</button>
+            <!-- <button onclick="showCoverPage()">Show Cover Page</button> -->
+            <form action="{% url 'logout' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+            {{ messl|json_script:"messages-data" }}
+            <div id="bl">
+                    <!-- {% for mess in messl%}
+                        <p class="mmmm" id="e">{{ mess.message }}</p>
+                        <p id="l" style="color: #000; text-align: right;">{{ mess.name }}</p>
+                        <hr>
+                    {% endfor %} -->
+
+            </div>
+                
+    <script>
+        window.check=0;
+        document.addEventListener('DOMContentLoaded', function(){
+        // console.log("i")
+        let messagesData = JSON.parse(document.getElementById("messages-data").textContent);
+        // console.log(messagesData);
+        // console.log(typeof messagesData);
+        // Get the target container
+        // var container = document.getElementById("bl");
+        // container.className="object";
+        var container=document.createElement("div");
+        container.classList.add("object");
+        // Loop through each message and append it to the div
+        function processMessage(index) {
+            if(index>=messagesData.length) return;
+            let mess=messagesData[index];
+
+            let messageElement = document.createElement("p");
+            messageElement.className = "mmmm";
+            messageElement.id = "e";
+            messageElement.textContent = mess.message; // Message text
+
+            let nameElement = document.createElement("p");
+            nameElement.id = "l";
+            nameElement.style.color = "#000";
+            nameElement.style.textAlign = "right";
+            nameElement.textContent = mess.name; // Sender name
+            let hr = document.createElement("hr");
+
+            // Append elements to the container
+            container.appendChild(messageElement);
+            container.appendChild(nameElement);
+            container.appendChild(hr);
+            
+            document.getElementById("bl").appendChild(container);
+            setTimeout(() => {
+                const rec=messageElement.getBoundingClientRect();
+                // console.log(rec);
+                // console.log("p")
+                // console.log(window.check)
+                diff=window.check*550;
+                // console.log("Initial diff: ",diff)
+                // document.getElementById("message").value="";
+                // document.getElementById("name").value="";
+                if((rec.top-diff)>=550 ){
+                    // console.log("Ater: ", diff);
+                    // console.log("Rec-Diff: ", rec.top-diff);
+                    // $('.object').hide(1000);
+                    // $('object').show(1000);
+                    d=document.createElement("div");
+                    obj="object";
+                    d.classList.add(obj);
+                    window.check++;
+                    // console.log(window.check)
+                    diff=window.check*550;
+                    
+                    
+                    d.appendChild(messageElement);
+                    d.appendChild(nameElement);
+                    d.appendChild(hr);
+                    console.log(d);
+                    container=d;
+                    // document.body.appendChild(d);
+                    document.getElementById("bl").appendChild(d);
+                    
+                    
+                }
+                setTimeout(() => processMessage(index+1), 50);
+                }, 100);
+            }
+                processMessage(0);
+                });
+                    
+
+        </script>
+        <script>
+            let currentPage=0;
+            // let cover=null;
+            let fullCard=[];
+            // let coverH=false;
+            function activate3DCard() {
+                if (!document.getElementById("flip-style")) {
+                    const style = document.createElement("style");
+                    style.id = "flip-style";
+                    style.textContent = `
+                    .flipbook {
+                        perspective: 1500px;
+                        width: 320px;
+                        height: 445px;
+                        position: relative;
+                        margin: 60px auto;
+                    }
+
+                    .card-stack {
+                        position: relative;
+                        width: 100%;
+                        height: 100%;
+                        transform-style: preserve-3d;
+                    }
+
+                    .object {
+                        background-color: white;
+                        width: 300px;
+                        height: 445px;
+                        border: 10px solid blue;
+                        margin: 0 auto;
+                        color: darkslateblue;
+                        padding: 20px;
+                        line-height: 15px;
+                        font-size: large;
+                        font-weight: bold;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        transform-origin: left center;
+                        backface-visibility: hidden;
+                        
+                        // transition: transform 1s ease, z-index 0.5s;
+                        transition: transform 1s ease;
+                        cursor: pointer;
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                        transform: rotateY(0deg);
+                        // pointer-events: none;
+                    }
+
+                    // .object:hover {
+                    //     transform: rotateY(-180deg);
+                    //     z-index: 999 !important
+                    // }
+                    
+                    .object.flipped{
+                        transform:  rotateY(-180deg);
+                        z-index: 999 !important;
+                        // opacity: 1;
+                        // display: block;
+                        // visibility: visible;
+                        // pointer-events: auto;
+                    }
+
+                    .cover-card {
+                        background-image: url('/static/hb.jpg'); /* Happy Birthday image */
+                        width: 340px;
+                        height: 480px;
+                        // background-size: cover;
+                        background-position: center;
+                        padding: 0;
+                        color: transparent;
+                        border: 10px solid gold !important;
+                        // z-index: 1000;
+                    }
+
+                    .hidden-card{
+                        visibility: hidden;
+                        // display: none !important;
+                    }
+
+                    #exportBtn {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    padding: 10px 15px;
+                    background-color: #4CAF50;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    z-index: 10000;
+                    }
+                `;
+                document.head.appendChild(style);
+                }
+                const oldContainer = document.getElementById("bl");
+                const cardElements = Array.from(oldContainer.querySelectorAll(".object"));
+                console.log(cardElements.length);
+
+                // Cover card (new)
+                // cover = document.createElement("div");
+                // cover.classList.add("object", "cover-card");
+                
+                // fullCard=[cover, ...cardElements];
+                fullCard=cardElements;
+            
+
+                // Create new structure
+                const flipbook = document.createElement("div");
+                flipbook.className = "flipbook";
+
+                const cardStack = document.createElement("div");
+                cardStack.className = "card-stack";
+
+                
+                // Move and style each card
+                fullCard.forEach((el, i) => {
+                
+                    el.classList.remove('flipped');
+                    el.style.zIndex=fullCard.length-i;
+                    
+                
+                    cardStack.appendChild(el);
+                    
+                });
+
+                flipbook.appendChild(cardStack);
+                oldContainer.innerHTML = ""; // Clear the original
+                oldContainer.appendChild(flipbook); // Insert new layout
+
+                if (!document.getElementById('exportBtn')) {
+                    const exportBtn = document.createElement('button');
+                    exportBtn.id = 'exportBtn';
+                    exportBtn.textContent = 'Export to PDF';
+                    exportBtn.onclick = exportToPDF;
+                    document.body.appendChild(exportBtn);
+                }
+                
+                setTimeout(() =>{
+                    flipToPage(0, true);
+                }, 200);
+
+                // flipToPage(0);
+                
+            }
+            function flipToPage(index){
+                
+               
+// cards
+                fullCard.forEach((card, i) => {
+                    if (i === index) {
+                        card.classList.add("flipped");
+                        card.style.zIndex = 999;
+                        
+                    } else {
+                        // card.classList.remove("flipped");
+                        setTimeout(() => {
+                            card.classList.remove("flipped");
+                        }, 5000);
+                        card.style.zIndex = fullCard.length - i;
+                    }
+                });
+
+            
+                // if(!showC){
+                //     if(index>0 && cover){
+                //         cover.classList.add("hidden-card");
+                //         coverH=true;
+                //     }
+                // }   else{
+                //         if(cover){
+                //             cover.classList.remove("hidden-card");
+                //     }
+                // }
+               
+                currentPage = index;
+            }
+            function nextPage(){
+                if (currentPage < fullCard.length - 1) {
+                    // flipToPage(currentPage + 1);
+
+                    // if (currentPage === 0 && cover && !coverH) {
+                    //     cover.classList.add("hidden-card");
+                    //     coverH=true;
+                    // }
+                    flipToPage(currentPage + 1);
+                }
+            }
+            function prevPage(){
+                if (currentPage > 0) {
+                    flipToPage(currentPage - 1);
+                }
+            }
+
+            // function showCoverPage() {
+            //     if (cover) {
+            //         cover.classList.remove("hidden-card");
+            //         coverH=false;
+            //         flipToPage(0, true);
+            //     }
+            // }
+
+    async function exportToPDF() {
+        // Load jsPDF and html2canvas libraries dynamically
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+        await loadScript('https://html2canvas.hertzen.com/dist/html2canvas.min.js');
+        
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        // Hide navigation elements before capturing
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) exportBtn.style.visibility = 'hidden';
+        
+        // Capture each card
+        for (let i = 0; i < fullCard.length; i++) {
+            const card = fullCard[i];
+            const originalClasses = card.className;
+
+            // Make card visible for capture
+            card.className = 'object';
+            card.style.visibility = 'visible';
+            card.style.position = 'relative';
+            card.style.transform = 'rotateY(0deg)';
+            
+            // Capture card
+            const canvas = await html2canvas(card, {
+                scale: 2,
+                logging: false,
+                useCORS: true,
+                allowTaint: true
+            });
+            
+            // Add image to PDF
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const imgWidth = 210; // A4 width in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            
+            // Add new page if not last card
+            if (i < fullCard.length - 1) {
+                pdf.addPage();
+            }
+            
+            // Restore original classes
+            card.className = originalClasses;
+        }
+        
+        // Restore navigation elements
+        if (exportBtn) exportBtn.style.visibility = 'visible';
+        
+        // Save PDF
+        pdf.save('cards-export.pdf');
+    }
+
+    // Helper function to load scripts dynamically
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            if (document.querySelector(`script[src="${src}"]`)) {
+                resolve();
+                return;
+            }
+            
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+        </script>
+                
+                
+            </div>
+        </div>
+   
+    
+
+    <div class="container">{% block content %} {% endblock %}</div>
+    <!-- <div class="object" id="object1"></div>
+    <div class="object-2" id="object2"></div>
+    <div class="object-3" id="object3"></div> -->
+    <!-- {% for item in every %}
+        <p>{{ item.name }}</p>
+        <p>{{ item.message }}</p>
+    {% endfor %} -->
+
+    <script src="{% static 'jquery.js' %}"></script>
+    <script src="{% static 'script.js' %}"></script>
+    
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Sign Up Page</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}" type="text/css">
+</head>
+<script>
+  function h(){
+        console.log("Y")
+        var email=document.getElementById("s").value;
+        console.log(email)
+        var csrftoken = '{{ csrf_token }}';
+        var r = new XMLHttpRequest();
+        r.onreadystatechange=function(){
+            if(this.readyState==4 && this.status==200){
+                console.log(this.responseText);
+                
+            }
+        }
+        r.open("POST", '/sign');
+        r.setRequestHeader("X-CSRFToken", csrftoken);
+        const f=new FormData();
+        f.append('addr',email)
+        // req.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+        r.send(f);
+
+    };
+</script>
+<body>
+    <h1>HEHEHE</h1>
+    <form method="POST" action="{% url 'sign' %}">
+    {% csrf_token %}
+        <div class="mb-3">
+          <input id="s" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="example@site.com" name="addr">
+          <!-- {% if messages%}
+            {% for message in messages %} -->
+              
+                <!-- {{ message }} -->
+                <!-- <button onclick="h()" type="button" class="btn btn-primary" data-bs-dismiss="alert" aria-label="Close">Sign Up</button> -->
+          
+            <!-- {% endfor %}
+          {% endif %} -->
+        </div>
+        <br>
+        <button onclick="window.location.href= 'index.html'" type="submit">Sign</button>
+        <!-- <button onclick="h()" type="button" class="btn btn-primary">Sign Up</button> -->
+      </form>
+</body>
+</html>
+{% endblock %}
